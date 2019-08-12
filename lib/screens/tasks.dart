@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import '../widgets/list_tile.dart';
 import '../widgets/list_view.dart';
+import '../models/task.dart';
+import '../models/tasks_data.dart';
+import 'package:provider/provider.dart';
 
-class TaskScreen extends StatelessWidget {
+class TaskScreen extends StatefulWidget {
+  @override
+  _TaskScreenState createState() => _TaskScreenState();
+}
+
+class _TaskScreenState extends State<TaskScreen> {
+  String titleNewItem;
+
   Widget buildBottomSheet(BuildContext context) {
     return Container(
       color: Color(0xff757575),
@@ -32,6 +42,9 @@ class TaskScreen extends StatelessWidget {
                 ),
                 TextField(
                   autofocus: true,
+                  onChanged: (value) {
+                    titleNewItem = value;
+                  },
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     border: UnderlineInputBorder(
@@ -59,7 +72,10 @@ class TaskScreen extends StatelessWidget {
                     ),
                   ),
                   color: Colors.lightBlueAccent,
-                  onPressed: () {},
+                  onPressed: () {
+                    Provider.of<TaskData>(context).addTask(titleNewItem);
+                    Navigator.pop(context);
+                  },
                 ),
               ],
             ),
@@ -115,7 +131,9 @@ class TaskScreen extends StatelessWidget {
                   height: 10.0,
                 ),
                 Text(
-                  '12 tasks remaining',
+                  Provider.of<TaskData>(context).tasks.length == 1
+                      ? '1 Task remaining'
+                      : '${Provider.of<TaskData>(context).tasks.length} Tasks remaining',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18.0,
